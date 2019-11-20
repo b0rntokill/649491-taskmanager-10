@@ -426,10 +426,10 @@ const boardTasks = main.querySelector(`.board__tasks`);
 
 renderTemplate(boardTasks, createBoardCardEditTemplate(), `afterbegin`);
 
-const repeater = (count, fn) => {
+const repeat = (count, fn) => {
   Array(count).fill(``).forEach(fn);
 };
 
-repeater(TASK_COUNT, () => {
+repeat(TASK_COUNT, () => {
   renderTemplate(boardTasks, createBoardCardTemplate());
 });
