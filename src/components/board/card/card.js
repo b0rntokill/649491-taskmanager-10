@@ -1,5 +1,32 @@
-const createTaskCardTemplate = () => {
-  return `<article class="card card--black">
+import {MONTH_NAMES} from './../../../const.js';
+import {formatTime, castTimeFormat} from './../../../utils.js';
+const DEADLINE_COLOR = `red`;
+const DEADLINE_CLASS = `card--deadline`;
+const REPEAT_CLASS = `card--repeat`;
+
+const createHashtagsMarkup = (hastags) => {
+  return hastags.map((hashtag) => {
+    return `<span class="card__hashtag-inner">
+              <span class="card__hashtag-name">
+                #${hashtag}
+              </span>
+            </span>`;
+  }).join(``);
+};
+
+const createTaskCardTemplate = (task) => {
+  const hashtagsMarkup = createHashtagsMarkup([...task.tags]);
+
+  const isExpired = task.dueDate instanceof Date && task.dueDate < Date.now();
+  const color = isExpired ? DEADLINE_COLOR : task.color;
+  const deadlineClass = isExpired ? DEADLINE_CLASS : ``;
+  const repeatClass = Object.values(task.repeatingDays).some(Boolean) ? REPEAT_CLASS : ``;
+
+  const isDueDate = task.dueDate instanceof Date;
+  const date = isDueDate ? `${castTimeFormat(task.dueDate.getDate())} ${MONTH_NAMES[task.dueDate.getMonth()].toUpperCase()}` : ``;
+  const time = isDueDate ? `${formatTime(task.dueDate).toUpperCase()}` : ``;
+
+  return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
@@ -24,7 +51,7 @@ const createTaskCardTemplate = () => {
                 </div>
 
                 <div class="card__textarea-wrap">
-                  <p class="card__text">Example default task with default color.</p>
+                  <p class="card__text">${task.description}</p>
                 </div>
 
                 <div class="card__settings">
@@ -32,31 +59,17 @@ const createTaskCardTemplate = () => {
                     <div class="card__dates">
                       <div class="card__date-deadline">
                         <p class="card__input-deadline-wrap">
-                          <span class="card__date">23 September</span>
-                          <span class="card__time">11:15 PM</span>
+                          <span class="card__date">${date}</span>
+                          <span class="card__time">${time}</span>
                         </p>
                       </div>
                     </div>
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        <span class="card__hashtag-inner">
-                          <span class="card__hashtag-name">
-                            #todo
-                          </span>
-                        </span>
-
-                        <span class="card__hashtag-inner">
-                          <span class="card__hashtag-name">
-                            #personal
-                          </span>
-                        </span>
-
-                        <span class="card__hashtag-inner">
-                          <span class="card__hashtag-name">
-                            #important
-                          </span>
-                        </span>
+                      <span class="card__hashtag-inner">
+                        ${hashtagsMarkup}
+                      </span>
                       </div>
                     </div>
                   </div>

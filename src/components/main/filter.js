@@ -1,72 +1,44 @@
+import {FILTER_NAMES} from './../../const.js';
+import {tasks} from './../../mock/mock-task.js';
+
+const filterCountMap = {
+  "all": (tasksArray) => tasksArray.length,
+  "overdue": (tasksArray) => tasksArray.filter((task) => task.dueDate instanceof Date && task.dueDate < Date.now()).length,
+  "today": (tasksArray) => tasksArray.filter((task) => task.dueDate instanceof Date && task.dueDate === Date.now()).length,
+  "favorites": (tasksArray) => tasksArray.filter((task) => task.isFavorite).length,
+  "repeating": (tasksArray) => tasksArray.filter((task) => Object.values(task.repeatingDays).some(Boolean)).length,
+  "tags": (tasksArray) => tasksArray.filter((task) => task.tags.size).length,
+  "archive": (tasksArray) => tasksArray.filter((task) => task.isArchive).length
+};
+
+const generateFilters = (filters, tasksArray) => {
+  return filters.map((filter) => {
+    return {
+      name: filter,
+      count: filterCountMap[filter](tasksArray),
+    };
+  });
+};
+
+const createFiltersMarkup = (filters, isChecked) => {
+  return filters.map((filter) => {
+    const {name, count} = filter;
+    return `<input
+              type="radio"
+              id="filter__${name}"
+              class="filter__input visually-hidden"
+              name="filter"
+              ${isChecked ? `checked` : ``}
+            />
+            <label for="filter__${name}" class="filter__label">${name} <span class="filter__${name}-count">${count}</span></label
+            >`;
+  }).join(``);
+};
+
 const createMainFilterTemplate = () => {
-  return `<section class="main__filter filter container">
-            <input
-              type="radio"
-              id="filter__all"
-              class="filter__input visually-hidden"
-              name="filter"
-              checked
-            />
-            <label for="filter__all" class="filter__label">
-              All <span class="filter__all-count">13</span></label
-            >
-            <input
-              type="radio"
-              id="filter__overdue"
-              class="filter__input visually-hidden"
-              name="filter"
-              disabled
-            />
-            <label for="filter__overdue" class="filter__label"
-              >Overdue <span class="filter__overdue-count">0</span></label
-            >
-            <input
-              type="radio"
-              id="filter__today"
-              class="filter__input visually-hidden"
-              name="filter"
-              disabled
-            />
-            <label for="filter__today" class="filter__label"
-              >Today <span class="filter__today-count">0</span></label
-            >
-            <input
-              type="radio"
-              id="filter__favorites"
-              class="filter__input visually-hidden"
-              name="filter"
-            />
-            <label for="filter__favorites" class="filter__label"
-              >Favorites <span class="filter__favorites-count">1</span></label
-            >
-            <input
-              type="radio"
-              id="filter__repeating"
-              class="filter__input visually-hidden"
-              name="filter"
-            />
-            <label for="filter__repeating" class="filter__label"
-              >Repeating <span class="filter__repeating-count">1</span></label
-            >
-            <input
-              type="radio"
-              id="filter__tags"
-              class="filter__input visually-hidden"
-              name="filter"
-            />
-            <label for="filter__tags" class="filter__label"
-              >Tags <span class="filter__tags-count">1</span></label
-            >
-            <input
-              type="radio"
-              id="filter__archive"
-              class="filter__input visually-hidden"
-              name="filter"
-            />
-            <label for="filter__archive" class="filter__label"
-              >Archive <span class="filter__archive-count">115</span></label
-            >
-          </section>`;
+  const filters = generateFilters(FILTER_NAMES, tasks);
+  const filtersMarkup = createFiltersMarkup(filters);
+  return `<section class="main__filter filter container">${filtersMarkup}</section>`;
 };
 
 export {createMainFilterTemplate};

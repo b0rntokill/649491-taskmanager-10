@@ -6,8 +6,9 @@ import {createBoardTaskTemplate} from './components/board/task.js';
 import {createTaskCardEditTemplate} from './components/board/card/card-edit.js';
 import {createTaskCardTemplate} from './components/board/card/card.js';
 import {createBoardMoreButtonTemplate} from './components/board/more-button.js';
+import {tasks} from './mock/mock-task.js';
 
-const TASK_COUNT = 3;
+const RENDER_TASK_COUNT = 8;
 const main = document.querySelector(`.main`);
 const mainControl = main.querySelector(`.main__control`);
 
@@ -27,12 +28,22 @@ renderTemplate(board, createBoardMoreButtonTemplate());
 
 const boardTasks = main.querySelector(`.board__tasks`);
 
-renderTemplate(boardTasks, createTaskCardEditTemplate(), `afterbegin`);
+let taskRenderCount = RENDER_TASK_COUNT;
 
-const repeat = (count, fn) => {
-  Array(count).fill(``).forEach(fn);
+renderTemplate(boardTasks, createTaskCardEditTemplate(tasks[0]), `afterbegin`);
+tasks.slice(1, taskRenderCount).forEach((task) => renderTemplate(boardTasks, createTaskCardTemplate(task), `beforeend`));
+
+const moreButton = main.querySelector(`.load-more`);
+
+const onMoreButtonClick = (evt) => {
+  evt.preventDefault();
+  const currentTaskRender = taskRenderCount;
+  taskRenderCount += RENDER_TASK_COUNT;
+  tasks.slice(currentTaskRender, taskRenderCount).forEach((task) => renderTemplate(boardTasks, createTaskCardTemplate(task), `beforeend`));
+
+  if (tasks.length <= taskRenderCount) {
+    moreButton.remove();
+  }
 };
 
-repeat(TASK_COUNT, () => {
-  renderTemplate(boardTasks, createTaskCardTemplate());
-});
+moreButton.addEventListener(`click`, onMoreButtonClick);
