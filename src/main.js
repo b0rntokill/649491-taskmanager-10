@@ -41,7 +41,7 @@ const onMoreButtonClick = (evt) => {
   taskRenderCount += RENDER_TASK_COUNT;
   tasks.slice(currentTaskRender, taskRenderCount).forEach((task) => renderTemplate(boardTasks, createTaskCardTemplate(task), `beforeend`));
 
-  if (tasks.length < taskRenderCount) {
+  if (tasks.length <= taskRenderCount) {
     moreButton.remove();
   }
 };

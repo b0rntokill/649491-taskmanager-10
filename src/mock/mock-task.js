@@ -41,15 +41,8 @@ const getRandomTagsSet = (array) => {
 };
 
 const getRepeatingDays = () => {
-  return Object.assign({}, repeatingDaysDefault, {
-    mo: Math.random() > 0.5,
-    tu: Math.random() > 0.5,
-    we: Math.random() > 0.5,
-    th: Math.random() > 0.5,
-    fr: Math.random() > 0.5,
-    sa: Math.random() > 0.5,
-    su: Math.random() > 0.5
-  });
+  return Object.keys(repeatingDaysDefault).reduce((acc, cur) =>
+    Object.assign(acc, {[cur]: Math.random() > 0.5}), {});
 };
 
 const getDueDate = () => {
