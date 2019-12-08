@@ -31,7 +31,7 @@ const createMainControlTemplate = () => {
          </section>`;
 };
 
-class MainControl {
+export default class MainControl {
   constructor() {
     this._element = null;
   }
@@ -52,5 +52,3 @@ class MainControl {
     this._element = null;
   }
 }
-
-export {MainControl as default};

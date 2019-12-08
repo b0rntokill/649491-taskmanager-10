@@ -80,7 +80,7 @@ const createTaskCardTemplate = (task) => {
           </article>`;
 };
 
-class TaskCard {
+export default class TaskCard {
   constructor(task) {
     this._task = task;
     this._element = null;
@@ -102,5 +102,3 @@ class TaskCard {
     this._element = null;
   }
 }
-
-export {TaskCard as default};

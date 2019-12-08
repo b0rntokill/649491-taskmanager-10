@@ -5,7 +5,7 @@ const createBoardTaskTemplate = () => {
   </div>`;
 };
 
-class BoardTask {
+export default class BoardTask {
   constructor() {
     this._element = null;
   }
@@ -26,5 +26,3 @@ class BoardTask {
     this._element = null;
   }
 }
-
-export {BoardTask as default};

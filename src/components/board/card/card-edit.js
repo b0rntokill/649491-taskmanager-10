@@ -155,7 +155,7 @@ const createTaskCardEditTemplate = (task) => {
           </article>`;
 };
 
-class TaskCardEdit {
+export default class TaskCardEdit {
   constructor(task) {
     this._task = task;
     this._element = null;
@@ -177,5 +177,3 @@ class TaskCardEdit {
     this._element = null;
   }
 }
-
-export {TaskCardEdit as default};

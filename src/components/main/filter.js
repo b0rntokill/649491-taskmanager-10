@@ -42,7 +42,7 @@ const createMainFilterTemplate = () => {
   return `<section class="main__filter filter container">${filtersMarkup}</section>`;
 };
 
-class MainFilter {
+export default class MainFilter {
   constructor() {
     this._element = null;
   }
@@ -63,5 +63,3 @@ class MainFilter {
     this._element = null;
   }
 }
-
-export {MainFilter as default};

@@ -36,20 +36,20 @@ const renderTask = (task) => {
   const taskCardEditComponent = new TaskCardEditComponent(task);
 
   const editButton = taskCardComponent.getElement().querySelector(`.card__btn--edit`);
-  const editForm = taskCardComponent.getElement().querySelector(`.card__form`);
+  const editForm = taskCardEditComponent.getElement().querySelector(`form`);
 
   const onEditButtonClick = (evt) => {
     evt.preventDefault();
     boardTasks.replaceChild(taskCardEditComponent.getElement(), taskCardComponent.getElement());
   };
 
-  const onEditFormClick = (evt) => {
+  const onEditFormSubmit = (evt) => {
     evt.preventDefault();
-    boardTasks.replaceChild(taskCardEditComponent.getElement(), taskCardComponent.getElement());
+    boardTasks.replaceChild(taskCardComponent.getElement(), taskCardEditComponent.getElement());
   };
 
   editButton.addEventListener(`click`, onEditButtonClick);
-  editForm.addEventListener(`submit`, onEditFormClick);
+  editForm.addEventListener(`submit`, onEditFormSubmit);
 
   renderElement(boardTasks, taskCardComponent.getElement(), RenderPosition.BEFOREEND);
 };

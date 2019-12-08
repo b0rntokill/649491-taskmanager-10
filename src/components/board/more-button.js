@@ -4,7 +4,7 @@ const createBoardMoreButtonTemplate = () => {
   return `<button class="load-more" type="button">load more</button>`;
 };
 
-class MoreButton {
+export default class MoreButton {
   constructor() {
     this._element = null;
   }
@@ -25,5 +25,3 @@ class MoreButton {
     this._element = null;
   }
 }
-
-export {MoreButton as default};

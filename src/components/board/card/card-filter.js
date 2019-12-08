@@ -8,7 +8,7 @@ const createBoardFilterTemplate = () => {
           </div>`;
 };
 
-class BoardFilter {
+export default class BoardFilter {
   constructor() {
     this._element = null;
   }
@@ -29,5 +29,3 @@ class BoardFilter {
     this._element = null;
   }
 }
-
-export {BoardFilter as default};
