@@ -1,3 +1,5 @@
+import {createElement} from './../../../utils.js';
+
 const createBoardFilterTemplate = () => {
   return `<div class="board__filter-list">
             <a href="#" class="board__filter">SORT BY DEFAULT</a>
@@ -6,4 +8,26 @@ const createBoardFilterTemplate = () => {
           </div>`;
 };
 
-export {createBoardFilterTemplate};
+class BoardFilter {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createBoardFilterTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {BoardFilter as default};
