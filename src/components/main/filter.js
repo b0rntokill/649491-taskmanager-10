@@ -1,5 +1,6 @@
 import {FILTER_NAMES} from './../../const.js';
 import {tasks} from './../../mock/mock-task.js';
+import {createElement} from './../../utils.js';
 
 const filterCountMap = {
   "all": (tasksArray) => tasksArray.length,
@@ -41,4 +42,24 @@ const createMainFilterTemplate = () => {
   return `<section class="main__filter filter container">${filtersMarkup}</section>`;
 };
 
-export {createMainFilterTemplate};
+export default class MainFilter {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMainFilterTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

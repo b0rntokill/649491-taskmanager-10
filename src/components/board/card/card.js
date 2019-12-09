@@ -1,5 +1,6 @@
 import {MONTH_NAMES} from './../../../const.js';
-import {formatTime, castTimeFormat} from './../../../utils.js';
+import {formatTime, castTimeFormat, createElement} from './../../../utils.js';
+
 const DEADLINE_COLOR = `red`;
 const DEADLINE_CLASS = `card--deadline`;
 const REPEAT_CLASS = `card--repeat`;
@@ -79,4 +80,25 @@ const createTaskCardTemplate = (task) => {
           </article>`;
 };
 
-export {createTaskCardTemplate};
+export default class TaskCard {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskCardTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

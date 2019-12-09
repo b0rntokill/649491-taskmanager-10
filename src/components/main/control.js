@@ -1,4 +1,6 @@
-const createMainConrolTemplate = () => {
+import {createElement} from './../../utils.js';
+
+const createMainControlTemplate = () => {
   return `<section class="control__btn-wrap">
             <input
                 type="radio"
@@ -26,7 +28,27 @@ const createMainConrolTemplate = () => {
             <label for="control__statistic" class="control__label"
                 >STATISTICS</label
             >
-        	</section>`;
+         </section>`;
 };
 
-export {createMainConrolTemplate};
+export default class MainControl {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMainControlTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

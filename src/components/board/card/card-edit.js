@@ -1,5 +1,5 @@
 import {MONTH_NAMES, COLORS_LIST, DAYS} from './../../../const.js';
-import {formatTime, castTimeFormat} from './../../../utils.js';
+import {formatTime, castTimeFormat, createElement} from './../../../utils.js';
 
 const REPEAT_CLASS = `card--repeat`;
 const ANSWER_NO = `no`;
@@ -155,4 +155,25 @@ const createTaskCardEditTemplate = (task) => {
           </article>`;
 };
 
-export {createTaskCardEditTemplate};
+export default class TaskCardEdit {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskCardEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
