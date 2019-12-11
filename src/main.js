@@ -14,17 +14,17 @@ const RENDER_TASK_COUNT = 8;
 const main = document.querySelector(`.main`);
 const mainControl = main.querySelector(`.main__control`);
 
-const renderTask = (taskListelement, task) => {
+const renderTask = (taskListElement, task) => {
   const taskComponent = new TaskCardComponent(task);
   const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
   const replaceTaskToTaskEdit = () => {
-    taskListelement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+    taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
   };
 
   const taskEditComponent = new TaskCardEditComponent(task);
   const editForm = taskEditComponent.getElement().querySelector(`form`);
   const replaceTaskEditToTask = () => {
-    taskListelement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+    taskListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
   };
 
   const onEscKeyDown = (evt) => {
@@ -51,7 +51,39 @@ const renderTask = (taskListelement, task) => {
   editButton.addEventListener(`click`, onEditButtonClick);
   editForm.addEventListener(`submit`, onEditFormSubmit);
 
-  renderElement(taskListelement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  renderElement(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+const checkTask = (condition) => {
+  if (condition) {
+    renderElement(boardComponent.getElement(), new NoCardComponent().getElement(), RenderPosition.BEFOREEND);
+  } else {
+    renderElement(boardComponent.getElement(), new BoardFilterComponent().getElement(), RenderPosition.BEFOREEND);
+    renderElement(boardComponent.getElement(), new BoardTaskComponent().getElement(), RenderPosition.BEFOREEND);
+
+    const moreButtonComponent = new MoreButtonComponent();
+    renderElement(boardComponent.getElement(), moreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+
+    const boardTasks = boardComponent.getElement().querySelector(`.board__tasks`);
+
+    let taskRenderCount = RENDER_TASK_COUNT;
+
+    tasks.slice(0, taskRenderCount).forEach((task) => renderTask(boardTasks, task));
+
+    const onMoreButtonClick = (evt) => {
+      evt.preventDefault();
+      const currentTaskRender = taskRenderCount;
+      taskRenderCount += RENDER_TASK_COUNT;
+      tasks.slice(currentTaskRender, taskRenderCount).forEach((task) => renderTask(boardTasks, task));
+
+      if (tasks.length <= taskRenderCount) {
+        moreButtonComponent.getElement().remove();
+        moreButtonComponent.removeElement();
+      }
+    };
+
+    moreButtonComponent.getElement().addEventListener(`click`, onMoreButtonClick);
+  }
 };
 
 renderElement(mainControl, new MainControlComponent().getElement(), RenderPosition.BEFOREEND);
@@ -61,33 +93,4 @@ const boardComponent = new BoardComponent();
 renderElement(main, boardComponent.getElement(), RenderPosition.BEFOREEND);
 
 const isAllTasksArchived = tasks.every((task) => task.isArchive);
-
-if (isAllTasksArchived) {
-  renderElement(boardComponent.getElement(), new NoCardComponent().getElement(), RenderPosition.BEFOREEND);
-} else {
-  renderElement(boardComponent.getElement(), new BoardFilterComponent().getElement(), RenderPosition.BEFOREEND);
-  renderElement(boardComponent.getElement(), new BoardTaskComponent().getElement(), RenderPosition.BEFOREEND);
-
-  const moreButtonComponent = new MoreButtonComponent();
-  renderElement(boardComponent.getElement(), moreButtonComponent.getElement(), RenderPosition.BEFOREEND);
-
-  const boardTasks = boardComponent.getElement().querySelector(`.board__tasks`);
-
-  let taskRenderCount = RENDER_TASK_COUNT;
-
-  tasks.slice(0, taskRenderCount).forEach((task) => renderTask(boardTasks, task));
-
-  const onMoreButtonClick = (evt) => {
-    evt.preventDefault();
-    const currentTaskRender = taskRenderCount;
-    taskRenderCount += RENDER_TASK_COUNT;
-    tasks.slice(currentTaskRender, taskRenderCount).forEach((task) => renderTask(boardTasks, task));
-
-    if (tasks.length <= taskRenderCount) {
-      moreButtonComponent.getElement().remove();
-      moreButtonComponent.removeElement();
-    }
-  };
-
-  moreButtonComponent.getElement().addEventListener(`click`, onMoreButtonClick);
-}
+checkTask(isAllTasksArchived);
