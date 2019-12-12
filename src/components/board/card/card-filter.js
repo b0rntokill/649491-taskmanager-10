@@ -1,4 +1,4 @@
-import {createElement} from './../../../utils.js';
+import AbstractComponent from '../../abstract-component.js';
 
 const createBoardFilterTemplate = () => {
   return `<div class="board__filter-list">
@@ -8,24 +8,8 @@ const createBoardFilterTemplate = () => {
           </div>`;
 };
 
-export default class BoardFilter {
-  constructor() {
-    this._element = null;
-  }
-
+export default class BoardFilter extends AbstractComponent {
   getTemplate() {
     return createBoardFilterTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
