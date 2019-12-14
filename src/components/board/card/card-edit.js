@@ -1,5 +1,6 @@
 import {MONTH_NAMES, COLORS_LIST, DAYS} from './../../../const.js';
-import {formatTime, castTimeFormat, createElement} from './../../../utils.js';
+import {formatTime, castTimeFormat} from '../../../utils/common.js';
+import AbstractComponent from '../../abstract-component.js';
 
 const REPEAT_CLASS = `card--repeat`;
 const ANSWER_NO = `no`;
@@ -155,25 +156,18 @@ const createTaskCardEditTemplate = (task) => {
           </article>`;
 };
 
-export default class TaskCardEdit {
+export default class TaskCardEdit extends AbstractComponent {
   constructor(task) {
+    super();
     this._task = task;
-    this._element = null;
   }
 
   getTemplate() {
     return createTaskCardEditTemplate(this._task);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
   }
 }

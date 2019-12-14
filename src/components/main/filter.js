@@ -1,6 +1,5 @@
 import {FILTER_NAMES} from './../../const.js';
-import {tasks} from './../../mock/mock-task.js';
-import {createElement} from './../../utils.js';
+import AbstractComponent from './../abstract-component.js';
 
 const filterCountMap = {
   "all": (tasksArray) => tasksArray.length,
@@ -36,30 +35,19 @@ const createFiltersMarkup = (filters, isChecked) => {
   }).join(``);
 };
 
-const createMainFilterTemplate = () => {
+const createMainFilterTemplate = (tasks) => {
   const filters = generateFilters(FILTER_NAMES, tasks);
   const filtersMarkup = createFiltersMarkup(filters);
   return `<section class="main__filter filter container">${filtersMarkup}</section>`;
 };
 
-export default class MainFilter {
-  constructor() {
-    this._element = null;
+export default class MainFilter extends AbstractComponent {
+  constructor(tasks) {
+    super();
+    this._tasks = tasks;
   }
 
   getTemplate() {
-    return createMainFilterTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+    return createMainFilterTemplate(this._tasks);
   }
 }
