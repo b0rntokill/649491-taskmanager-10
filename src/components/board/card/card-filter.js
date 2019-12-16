@@ -14,7 +14,7 @@ const createBoardFilterTemplate = () => {
           </div>`;
 };
 
-export default class BoardFilter extends AbstractComponent {
+export default class CardFilter extends AbstractComponent {
   constructor() {
     super();
     this._currentSortType = SortType.DEFAULT;
@@ -26,6 +26,8 @@ export default class BoardFilter extends AbstractComponent {
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
       if (evt.target.tagName !== `A`) {
         return;
       }

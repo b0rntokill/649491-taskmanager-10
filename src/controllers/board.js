@@ -1,6 +1,6 @@
 import BoardTaskComponent from './../components/board/task.js';
 import MoreButtonComponent from './../components/board/more-button.js';
-import BoardFilterComponent, {SortType} from './../components/board/card/card-filter.js';
+import CardFilterComponent, {SortType} from './../components/board/card/card-filter.js';
 import TaskCardEditComponent from './../components/board/card/card-edit.js';
 import TaskCardComponent from './../components/board/card/card.js';
 import NoCardComponent from './../components/board/card/no-card.js';
@@ -58,33 +58,12 @@ export default class BoardController {
     this._container = container;
 
     this._noCardComponent = new NoCardComponent();
-    this._boardFilterComponent = new BoardFilterComponent();
+    this._boardFilterComponent = new CardFilterComponent();
     this._boardTaskComponent = new BoardTaskComponent();
     this._moreButtonComponent = new MoreButtonComponent();
   }
 
   render(tasks) {
-    const renderLoadMoreButton = () => {
-      if (taskRenderCount >= tasks.length) {
-        return;
-      }
-
-      const onMoreButtonClick = (evt) => {
-        evt.preventDefault();
-        const currentTaskRender = taskRenderCount;
-        taskRenderCount += RENDER_TASK_COUNT;
-        renderTasks(this._boardTaskComponent.getElement(), tasks.slice(currentTaskRender, taskRenderCount));
-
-        if (tasks.length <= taskRenderCount) {
-          remove(this._moreButtonComponent);
-        }
-      };
-
-      this._moreButtonComponent.setClickHandler(onMoreButtonClick);
-
-      render(container, this._moreButtonComponent, RenderPosition.BEFOREEND);
-    };
-
     const container = this._container.getElement();
     const isAllTasksArchived = tasks.every((task) => task.isArchive);
 
@@ -92,37 +71,58 @@ export default class BoardController {
       render(container, this._noCardComponent, RenderPosition.BEFOREEND);
     }
 
-    render(container, this._boardFilterComponent, RenderPosition.BEFOREEND);
-    render(container, this._boardTaskComponent, RenderPosition.BEFOREEND);
-
     let taskRenderCount = RENDER_TASK_COUNT;
-    renderTasks(this._boardTaskComponent.getElement(), tasks.slice(0, taskRenderCount));
-    renderLoadMoreButton();
 
-    this._boardFilterComponent.setSortTypeChangeHandler((sortType) => {
-      let sortedTasks = [];
+    const renderTasksList = (tasksForRender) => {
+      render(container, this._boardFilterComponent, RenderPosition.BEFOREEND);
+      render(container, this._boardTaskComponent, RenderPosition.BEFOREEND);
 
-      switch (sortType) {
-        case SortType.DATE_UP:
-          sortedTasks = tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
-          break;
-        case SortType.DATE_DOWN:
-          sortedTasks = tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
-          break;
-        case SortType.DEFAULT:
-          sortedTasks = tasks.slice(0, taskRenderCount);
-          break;
-      }
+      const renderLoadMoreButton = () => {
+        if (taskRenderCount >= tasks.length) {
+          return;
+        }
 
-      this._boardTaskComponent.getElement().innerHTML = ``;
+        const onMoreButtonClick = (evt) => {
+          evt.preventDefault();
+          const currentTaskRender = taskRenderCount;
+          taskRenderCount += RENDER_TASK_COUNT;
+          renderTasks(this._boardTaskComponent.getElement(), tasksForRender.slice(currentTaskRender, taskRenderCount));
 
-      renderTasks(this._boardTaskComponent.getElement(), sortedTasks);
+          if (tasks.length <= taskRenderCount) {
+            remove(this._moreButtonComponent);
+          }
+        };
 
-      if (sortType === SortType.DEFAULT) {
-        renderLoadMoreButton();
-      } else {
+        this._moreButtonComponent.setClickHandler(onMoreButtonClick);
+        render(container, this._moreButtonComponent, RenderPosition.BEFOREEND);
+      };
+
+      renderTasks(this._boardTaskComponent.getElement(), tasksForRender.slice(0, taskRenderCount));
+      renderLoadMoreButton();
+
+      this._boardFilterComponent.setSortTypeChangeHandler((sortType) => {
+        let sortedTasks = [];
+
+        switch (sortType) {
+          case SortType.DATE_UP:
+            sortedTasks = tasksForRender.slice().sort((a, b) => a.dueDate - b.dueDate);
+            break;
+          case SortType.DATE_DOWN:
+            sortedTasks = tasksForRender.slice().sort((a, b) => b.dueDate - a.dueDate);
+            break;
+          case SortType.DEFAULT:
+            sortedTasks = tasksForRender.slice(0, taskRenderCount);
+            break;
+        }
+
+        this._boardTaskComponent.getElement().innerHTML = ``;
+
+        taskRenderCount = RENDER_TASK_COUNT;
         remove(this._moreButtonComponent);
-      }
-    });
+        renderTasksList(sortedTasks);
+      });
+    };
+
+    renderTasksList(tasks);
   }
 }
