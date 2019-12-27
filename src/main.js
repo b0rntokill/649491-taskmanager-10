@@ -1,9 +1,10 @@
 import MainControlComponent from './components/main/control.js';
 import MainFilterComponent from './components/main/filter.js';
 import BoardComponent from './components/board/board.js';
-import BoardController from './controllers/board.js';
 import {tasks} from './mock/mock-task.js';
 import {render, RenderPosition} from './utils/render.js';
+
+import BoardController from './controllers/board-controller.js';
 
 const main = document.querySelector(`.main`);
 const mainControl = main.querySelector(`.main__control`);
