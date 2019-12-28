@@ -8,10 +8,10 @@ const Mode = {
 };
 
 export default class TaskController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
-    // this._onViewChange = onViewChange;
+    this._onViewChange = onViewChange;
 
     this._mode = Mode.DEFAULT;
 
@@ -67,15 +67,14 @@ export default class TaskController {
     }
   }
 
-  // setDefaultView() {
-  //   console.log(this._mode);
-  //   if (this._mode !== Mode.DEFAULT) {
-  //     this._replaceTaskEditToTask();
-  //   }
-  // }
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceTaskEditToTask();
+    }
+  }
 
   _replaceTaskToTaskEdit() {
-    // this._onViewChange();
+    this._onViewChange();
 
     replace(this._taskEditComponent, this._taskComponent);
     this._mode = Mode.EDIT;

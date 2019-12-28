@@ -7,10 +7,18 @@ import {render, remove, RenderPosition} from '../utils/render.js';
 import TaskController from '../controllers/task-controller.js';
 
 const RENDER_TASK_COUNT = 8;
+// Ошибка же была в том, что я не возвращал самого таскКонтроллера, только результат выполнения его рендера, так?
+// const renderTasks = (taskListElement, tasks, onDataChange, onViewChange) => {
+//   return tasks.forEach((task) => {
+//     return new TaskController(taskListElement, onDataChange, onViewChange).render(task);
+//   });
+// };
 
-const renderTasks = (taskListElement, tasks, onDataChange) => {
-  tasks.forEach((task) => {
-    return new TaskController(taskListElement, onDataChange).render(task);
+const renderTasks = (taskListElement, tasks, onDataChange, onViewChange) => {
+  return tasks.map((task) => {
+    const taskController = new TaskController(taskListElement, onDataChange, onViewChange);
+    taskController.render(task);
+    return taskController;
   });
 };
 
@@ -28,7 +36,7 @@ export default class BoardController {
     this._moreButtonComponent = new MoreButtonComponent();
 
     this._onDataChange = this._onDataChange.bind(this);
-    // this._onViewChange = this._onViewChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._boardFilterComponent.setSortTypeChangeHandler(this._onSortTypeChange);
@@ -89,13 +97,11 @@ export default class BoardController {
     const newTasks = renderTasks(this._boardTaskComponent, tasks.slice(0, this._renderTasksCount), this._onDataChange, this._onViewChange);
     this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
 
-    this._renderLoadMoreButton();
-
-    console.log(this._showedTaskControllers);
+    this._renderLoadMoreButton(tasks);
   }
 
-  _renderLoadMoreButton() {
-    if (this._renderTasksCount >= this._tasks.length) {
+  _renderLoadMoreButton(tasks) {
+    if (this._renderTasksCount >= tasks.length) {
       return;
     }
 
@@ -103,10 +109,10 @@ export default class BoardController {
       evt.preventDefault();
       const currentTaskRender = this._renderTasksCount;
       this._renderTasksCount += RENDER_TASK_COUNT;
-      const newTasks = renderTasks(this._boardTaskComponent, this._tasks.slice(currentTaskRender, this._renderTasksCount), this._onDataChange, this._onViewChange);
+      const newTasks = renderTasks(this._boardTaskComponent, tasks.slice(currentTaskRender, this._renderTasksCount), this._onDataChange, this._onViewChange);
       this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
 
-      if (this._tasks.length <= this._renderTasksCount) {
+      if (tasks.length <= this._renderTasksCount) {
         remove(this._moreButtonComponent);
       }
     };
@@ -115,7 +121,7 @@ export default class BoardController {
     render(this._container.getElement(), this._moreButtonComponent, RenderPosition.BEFOREEND);
   }
 
-  // _onViewChange() {
-  //   this._showedTaskControllers.forEach((it) => it.setDefaultView());
-  // }
+  _onViewChange() {
+    this._showedTaskControllers.forEach((it) => it.setDefaultView());
+  }
 }

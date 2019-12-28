@@ -1,5 +1,4 @@
-import {MONTH_NAMES} from './../../../const.js';
-import {formatTime, castTimeFormat} from '../../../utils/common.js';
+import {formatTime, formatDate} from '../../../utils/common.js';
 import AbstractComponent from '../../abstract-component.js';
 
 const DEADLINE_COLOR = `red`;
@@ -35,8 +34,8 @@ const createTaskCardTemplate = (task) => {
   const favoritesButton = createButtonMarkup(`favorites`, task.isFavorite);
 
   const isDueDate = task.dueDate instanceof Date;
-  const date = isDueDate ? `${castTimeFormat(task.dueDate.getDate())} ${MONTH_NAMES[task.dueDate.getMonth()].toUpperCase()}` : ``;
-  const time = isDueDate ? `${formatTime(task.dueDate).toUpperCase()}` : ``;
+  const date = isDueDate ? formatDate(task.dueDate) : ``;
+  const time = isDueDate ? formatTime(task.dueDate) : ``;
 
   return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">

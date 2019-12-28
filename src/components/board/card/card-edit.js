@@ -1,5 +1,6 @@
-import {MONTH_NAMES, COLORS_LIST, DAYS} from './../../../const.js';
-import {formatTime, castTimeFormat} from '../../../utils/common.js';
+import {COLORS_LIST, DAYS} from './../../../const.js';
+import {formatTime, formatDate} from '../../../utils/common.js';
+import flatpickr from 'flatpickr';
 import AbstractSmartComponent from '../../abstract-smart-component.js';
 
 const REPEAT_CLASS = `card--repeat`;
@@ -73,8 +74,8 @@ const createTaskCardEditTemplate = (task, options = {}) => {
   const repeatQuestion = isRepeatingTask ? ANSWER_YES : ANSWER_NO;
 
   const dateQuestion = isDateShowing ? ANSWER_YES : ANSWER_NO;
-  const date = isDateShowing ? `${castTimeFormat(dueDate.getDate())} ${MONTH_NAMES[dueDate.getMonth()].toUpperCase()}` : ``;
-  const time = isDateShowing ? `${formatTime(dueDate).toUpperCase()}` : ``;
+  const date = isDateShowing ? formatDate(dueDate) : ``;
+  const time = isDateShowing ? formatTime(dueDate) : ``;
 
   const hashtagsMarkup = createHashtagsMarkup([...tags]);
   const repeatingDaysMarkup = createRepeatingDayMarkup(DAYS, activeRepeatingDays);
@@ -176,6 +177,9 @@ export default class TaskCardEdit extends AbstractSmartComponent {
     this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
     this._submitHandler = null;
+    this._flatpickr = null;
+
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -187,6 +191,12 @@ export default class TaskCardEdit extends AbstractSmartComponent {
     });
   }
 
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
+  }
+
   reset() {
     const task = this._task;
 
@@ -195,6 +205,24 @@ export default class TaskCardEdit extends AbstractSmartComponent {
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
 
     this.rerender();
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      // При своем создании `flatpickr` дополнительно создает вспомогательные DOM-элементы.
+      // Что бы их удалять, нужно вызывать метод `destroy` у созданного инстанса `flatpickr`.
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    if (this._isDateShowing) {
+      const dateElement = this.getElement().querySelector(`.card__date`);
+      this._flatpickr = flatpickr(dateElement, {
+        altInput: true,
+        allowInput: true,
+        defaultDate: this._task.dueDate,
+      });
+    }
   }
 
   setSubmitHandler(handler) {
