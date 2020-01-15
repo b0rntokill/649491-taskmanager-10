@@ -1,5 +1,4 @@
-import {MONTH_NAMES} from './../../../const.js';
-import {formatTime, castTimeFormat} from '../../../utils/common.js';
+import {formatTime, formatDate} from '../../../utils/common.js';
 import AbstractComponent from '../../abstract-component.js';
 
 const DEADLINE_COLOR = `red`;
@@ -16,6 +15,12 @@ const createHashtagsMarkup = (hastags) => {
   }).join(``);
 };
 
+const createButtonMarkup = (name, isActive) => {
+  return `<button type="button" class="card__btn card__btn--${name} ${isActive ? `` : `card__btn--disabled`}">
+            ${name}
+          </button>`;
+};
+
 const createTaskCardTemplate = (task) => {
   const hashtagsMarkup = createHashtagsMarkup([...task.tags]);
 
@@ -24,26 +29,21 @@ const createTaskCardTemplate = (task) => {
   const deadlineClass = isExpired ? DEADLINE_CLASS : ``;
   const repeatClass = Object.values(task.repeatingDays).some(Boolean) ? REPEAT_CLASS : ``;
 
+  const editButton = createButtonMarkup(`edit`, true);
+  const archiveButton = createButtonMarkup(`archive`, task.isArchive);
+  const favoritesButton = createButtonMarkup(`favorites`, task.isFavorite);
+
   const isDueDate = task.dueDate instanceof Date;
-  const date = isDueDate ? `${castTimeFormat(task.dueDate.getDate())} ${MONTH_NAMES[task.dueDate.getMonth()].toUpperCase()}` : ``;
-  const time = isDueDate ? `${formatTime(task.dueDate).toUpperCase()}` : ``;
+  const date = isDueDate ? formatDate(task.dueDate) : ``;
+  const time = isDueDate ? formatTime(task.dueDate) : ``;
 
   return `<article class="card card--${color} ${repeatClass} ${deadlineClass}">
             <div class="card__form">
               <div class="card__inner">
                 <div class="card__control">
-                  <button type="button" class="card__btn card__btn--edit">
-                    edit
-                  </button>
-                  <button type="button" class="card__btn card__btn--archive">
-                    archive
-                  </button>
-                  <button
-                    type="button"
-                    class="card__btn card__btn--favorites card__btn--disabled"
-                  >
-                    favorites
-                  </button>
+                  ${editButton}
+                  ${archiveButton}
+                  ${favoritesButton}
                 </div>
 
                 <div class="card__color-bar">
@@ -93,6 +93,16 @@ export default class TaskCard extends AbstractComponent {
 
   setEditButtonClickHandler(handler) {
     this.getElement().querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, handler);
+  }
+
+  setFavoritesButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, handler);
+  }
+
+  setArchiveButtonClickHandler(handler) {
+    this.getElement().querySelector(`.card__btn--archive`)
       .addEventListener(`click`, handler);
   }
 }
