@@ -69,6 +69,7 @@ export default class TaskController {
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      this._taskEditComponent.reset();
       this._replaceTaskEditToTask();
     }
   }
@@ -81,8 +82,8 @@ export default class TaskController {
   }
 
   _replaceTaskEditToTask() {
-    // Вот тут пока не понятно. Зачем резет и что будет если его не сделать.
-    this._taskEditComponent.reset();
+    // Вот тут пока не понятно. Зачем резет и что будет если его не сделать. Теперь понятно, убрали его в метод setDefaultView, там ему самое место!
+    // this._taskEditComponent.reset();
 
     replace(this._taskComponent, this._taskEditComponent);
     this._mode = Mode.DEFAULT;

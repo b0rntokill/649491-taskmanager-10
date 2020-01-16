@@ -51,6 +51,7 @@ export default class BoardController {
     if (isAllTasksArchived) {
       render(container, this._noCardComponent, RenderPosition.BEFOREEND);
     }
+
     render(this._container.getElement(), this._boardFilterComponent, RenderPosition.BEFOREEND);
     render(this._container.getElement(), this._boardTaskComponent, RenderPosition.BEFOREEND);
 
